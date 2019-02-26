@@ -3,10 +3,72 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:e="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:VK_MESSAGE"
-        mc:Ignorable="d"
-        Title="LoadingView" Height="450" Width="800">
+        mc:Ignorable="d"  
+        Title="LoadingView" Height="350" Width="680">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Canvas Name="FunctionalityBlock" Visibility="{Binding Path= VisibilityMessage}"  Height="300" Width="680" VerticalAlignment="Top" >
+
+            <ListView   Canvas.Top="0"  ItemsSource="{Binding Path = Friends}" SelectedItem="{Binding Path=  Friend,Mode=TwoWay}" Name="Friends" HorizontalAlignment="Right" Width="200" Height="300" Canvas.Left="470"  >
+                <e:Interaction.Triggers>
+                    <e:EventTrigger   EventName="SelectionChanged" >
+                        <e:InvokeCommandAction Command="{  Binding  GetMessagesCommand}" />
+                    </e:EventTrigger>
+                </e:Interaction.Triggers>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=FirstName}">Имя</GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=LastName}" Width="100">Фамилия</GridViewColumn> 
+                    </GridView>
+                </ListView.View> 
+            </ListView>
+            <Canvas Name="MessageBlock">
+            <ListView Name="Messages"  ItemsSource ="{Binding Path = Messages }" HorizontalAlignment="Left" Width="300" Height="250" >
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Text}" Width="200"></GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Date}" Width="50"></GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <TextBox Width="240" Height="50" Canvas.Top="260" Name="Message" Text="{Binding Path=Message, Mode=TwoWay}"> </TextBox>
+                <Button Name="SendMessage"  Width="50" Height="30" Canvas.Left="250" Canvas.Top="270" Content="Send" Command="{Binding Path=SendMessageCommand}"></Button>
+            </Canvas>
+        </Canvas>
+        <Canvas Name="LoadingFrame" Visibility="{Binding Path= VisibilityLoading}">        <Image Grid.ColumnSpan="2"   Opacity="100" Name="LoadingIcon" Width="560" Height="250" Source="/VK-MESSAGE;component/src/Loading.png" RenderTransformOrigin="0.5,0.5"  >
+          <Image.RenderTransform>
+            <RotateTransform x:Name="TransRotate" CenterX="0" CenterY="0" Angle="0" />
+            </Image.RenderTransform>
+            <Image.Resources>
+                <Storyboard x:Key="spin">
+                    <DoubleAnimation x:Name="da" 
+                                Storyboard.TargetName="TransRotate" 
+                                Storyboard.TargetProperty="Angle"
+                                By="360" 
+                                Duration="0:1:40"  
+                                AutoReverse="False" 
+                                RepeatBehavior="Forever" />
+                </Storyboard>
+            </Image.Resources>
+                   
+        </Image>
+        <TextBlock Grid.ColumnSpan="2" FontSize="40" Text="Loading" Canvas.Left="200" Canvas.Top="100" HorizontalAlignment="Center" >
+            <TextBlock.Effect>
+                <DropShadowEffect
+      ShadowDepth="0.5"
+      Direction="330"
+      Color="White"
+      Opacity="0.9"
+     BlurRadius="4"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        </Canvas>
+
+
     </Grid>
 </Window>

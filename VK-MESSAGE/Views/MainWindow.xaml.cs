@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
-
+using VK_MESSAGE.Views;
 using VkNet;
 using VkNet.Abstractions.Utils;
 using VkNet.Enums.Filters;
@@ -60,11 +60,14 @@ namespace VK_MESSAGE
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            Models.User user = new Models.User() { Login = Email.Text, Password = Password.Text, UseProxy = (bool)UseProxy.IsChecked };
             using (FileStream fs = new FileStream("user.data", FileMode.Create))
             {
-                bf.Serialize(fs, new Models.User() { Login = Email.Text, Password = Password.Text,UseProxy = (bool)UseProxy.IsChecked });
+                bf.Serialize(fs, user);
             }
+            LoadingView lw = new LoadingView(user);
+            lw.Show();
+            this.Close();
 
         }
     }
